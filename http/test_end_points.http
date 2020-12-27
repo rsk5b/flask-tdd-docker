@@ -1,14 +1,14 @@
 # part2 :deployment
 ## test local build
-GET https://{{host}}/ping
+GET http://{{host}}/ping
 Accept: application/json
 
 ### test users
-GET https://{{host}}/users
+GET http://{{host}}/users
 Accept: application/json
 
 ### added user
-POST https://{{host}}/users
+POST http://{{host}}/users
 Content-Type: application/json
 
 {
