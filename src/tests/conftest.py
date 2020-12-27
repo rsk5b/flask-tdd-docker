@@ -32,7 +32,7 @@ def test_database():
 
 @pytest.fixture(scope="function")
 def add_user():
-    from src.api.models import User
+    from src.api.users.models import User
 
     def _add_user(username, email):
         user = User(username=username, email=email)
