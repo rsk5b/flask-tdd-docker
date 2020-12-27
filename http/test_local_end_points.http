@@ -1,14 +1,14 @@
 # part2 :deployment
 ## test local build
-GET https://fast-brushlands-14384.herokuapp.com/ping
+GET http://localhost:5005/ping
 Accept: application/json
 
-### test users
-GET https://fast-brushlands-14384.herokuapp.com/users
+## test users
+GET http://localhost:5005/users
 Accept: application/json
 
 ### added user
-POST https://fast-brushlands-14384.herokuapp.com/users
+POST https://fast-brushlands-14384/users
 Content-Type: application/json
 
 {
@@ -17,16 +17,17 @@ Content-Type: application/json
 }
 
 
+### tests  from part 2: remaining routes
 ### get users
-GET https://fast-brushlands-14384.herokuapp.com/users
+GET https://localhost:5005/users
 Accept: application/json
 
 ### get single user
-GET https://fast-brushlands-14384.herokuapp.com/users/1
+GET https://localhost:5005/users/4
 Accept: application/json
 
 ### POST a user
-POST https://fast-brushlands-14384.herokuapp.com/users
+POST https://localhost:5005/users
 Content-Type: application/json
 
 {
@@ -35,15 +36,10 @@ Content-Type: application/json
 }
 
 ### Update a user
-PUT https://fast-brushlands-14384.herokuapp.com/users/4
+PUT https://localhost:5005/users/4
 Content-Type: application/json
 
 {
   "username": "foo",
   "email": "foo@something.com"
 }
-
-
-### Update a user
-DELETE https://fast-brushlands-14384.herokuapp.com/users/4
-Accept: application/json

@@ -3,10 +3,15 @@
 
 from flask import Blueprint, request
 from flask_restx import Api, Resource, fields
-from sqlalchemy.exc import InvalidRequestError
 
-from src import db
-from src.api.models import User
+from src.api.crud import ( # isort:skip
+    get_all_users,
+    get_user_by_id,
+    get_user_by_email,
+    add_user,
+    update_user,
+    delete_user
+)
 
 users_blueprint = Blueprint("users", __name__)
 api = Api(users_blueprint)
@@ -30,43 +35,36 @@ class UsersList(Resource):
         email = post_data.get("email")
         response_object = {}
 
-        try:
-            user = User.query.filter_by(email=email).first()
-            if user:
-                response_object["message"] = "Sorry. That email already exists."
-                return response_object, 400
+        user = get_user_by_email(email=email)
+        if user:
+            response_object["message"] = "Sorry. That email already exists."
+            return response_object, 400
 
-            new_user = User(username=username, email=email)
-            db.session.add(new_user)
-            db.session.commit()
-        except InvalidRequestError:
-            db.session.rollback()
-
+        new_user = add_user(username=username, email=email)
         response_object["message"] = f"{email} was added!"
         return response_object, 201
 
     @api.marshal_with(user_fields, as_list=True)
     def get(self):
-        users = User.query.all()
+        users = get_all_users()
         return users
 
 
 class Users(Resource):
     @api.marshal_with(user_fields)
     def get(self, user_id):
-        user = User.query.filter_by(id=user_id).first()
+        user = get_user_by_id(user_id)
         if not user:
             api.abort(404, f"User {user_id} does not exist")
         return user, 200
 
     def delete(self, user_id):
         response_object = {}
-        user = User.query.filter_by(id=user_id).first()
+        user = get_user_by_id(user_id)
         if not user:
             api.abort(404, f"User {user_id} does not exist")
 
-        db.session.delete(user)
-        db.session.commit()
+        delete_user(user)
         response_object["message"] = f"{user.email} was removed!"
         return response_object, 200
 
@@ -77,17 +75,15 @@ class Users(Resource):
         email = put_data.get("email")
         response_object = {}
 
-        user = User.query.filter_by(id=user_id).first()
+        user = get_user_by_id(user_id)
         if not user:
             api.abort(404, f"User {user_id} does not exist")
 
-        if User.query.filter_by(email=email).first():
+        if get_user_by_email(email):
             response_object["message"] = "Sorry. That email already exists."
             return response_object, 400
 
-        user.username = username
-        user.email = email
-        db.session.commit()
+        update_user(user, username, email)
         response_object["message"] = f"{user.id} was updated!"
         return response_object, 200
 
