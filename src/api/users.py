@@ -4,13 +4,13 @@
 from flask import Blueprint, request
 from flask_restx import Api, Resource, fields
 
-from src.api.crud import ( # isort:skip
+from src.api.crud import (  # isort:skip
     get_all_users,
     get_user_by_id,
     get_user_by_email,
     add_user,
     update_user,
-    delete_user
+    delete_user,
 )
 
 users_blueprint = Blueprint("users", __name__)
@@ -40,7 +40,7 @@ class UsersList(Resource):
             response_object["message"] = "Sorry. That email already exists."
             return response_object, 400
 
-        new_user = add_user(username=username, email=email)
+        add_user(username=username, email=email)
         response_object["message"] = f"{email} was added!"
         return response_object, 201
 
